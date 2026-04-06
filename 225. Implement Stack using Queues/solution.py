@@ -1,23 +1,46 @@
+"""2 Task"""
+
+class Node:
+    """class Node"""
+    def __init__(self, data, next=None):
+        self.data = data
+        self.next = None
+
 class Queue:
     """class Queue"""
     def __init__(self):
-        self.data = []
+        self.head = None
+        self.tail = None
 
     def push(self, x: int) -> None:
         """push"""
-        self.data.append(x)
+        new_node = Node(x)
+        if not self.head:
+            self.head = new_node
+            self.tail = new_node
+        else:
+            self.tail.next = new_node
+            self.tail = new_node
 
     def pop(self) -> int:
         """pop"""
-        return self.data.pop(0)
+        if not self.head:
+            return None
+        val = self.head.data
+        self.head = self.head.next
+        if not self.head:
+            self.tail = None
+        return val
 
     def top(self) -> int:
         """top"""
-        return self.data[0]
+        if not self.head:
+            return None
+        return self.head.data
 
     def empty(self) -> bool:
         """is_empty"""
-        if not self.data:
+        if not self.head:
             return True
         return False
 
