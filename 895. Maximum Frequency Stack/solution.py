@@ -1,58 +1,70 @@
 """3 Task"""
+from collections import deque
 
 class Node:
     """class Node"""
     def __init__(self, val, next=None):
         self.val = val
-        self.next = None
+        self.next = next
 
-class LinkedList:
-    """class LinkedList"""
+class Stack:
+    """class Stack"""
     def __init__(self):
-        self.head = None
+        self.top = None
 
     def push(self, val):
         """push"""
-        new_node = Node(val)
-        new_node.next = self.head
-        self.head = new_node
+        node = Node(val, self.top)
+        self.top = node
 
     def pop(self):
         """pop"""
-        if not self.head:
+        if not self.top:
             return None
-        val = self.head.val
-        self.head = self.head.next
+        val = self.top.val
+        self.top = self.top.next
         return val
+
+    def peek(self):
+        """peek"""
+        if not self.top:
+            return None
+        return self.top.val
 
     def empty(self):
         """is_empty"""
-        if self.head is None:
-            return True
-        return False
+        return self.top is None
+
+    def count_val(self, val):
+        """frequency of val"""
+        count = 0
+        curr = self.top
+        while curr:
+            if curr.val == val:
+                count += 1
+            curr = curr.next
+        return count
 
 class FreqStack:
-    """class FreqStack"""
+    """FreqStack"""
     def __init__(self):
-        self.freq = {}
-        self.groups = {}
-        self.maxfreq = 0
+        self.group_stacks = deque()
+
+    def _get_freq(self, val):
+        """frequency in stack"""
+        return sum(s.count_val(val) for s in self.group_stacks)
 
     def push(self, val: int) -> None:
         """push"""
-        self.freq[val] = self.freq.get(val, 0) + 1
-        f = self.freq[val]
-        self.maxfreq = max(self.maxfreq, f)
-
-        if f not in self.groups:
-            self.groups[f] = LinkedList()
-        self.groups[f].push(val)
+        freq = self._get_freq(val) + 1
+        while freq > len(self.group_stacks):
+            self.group_stacks.append(Stack())
+        self.group_stacks[freq - 1].push(val)
 
     def pop(self) -> int:
         """pop"""
-        val = self.groups[self.maxfreq].pop()
-        self.freq[val] -= 1
-
-        if self.groups[self.maxfreq].empty():
-            self.maxfreq -= 1
+        top_stack = self.group_stacks[-1]
+        val = top_stack.pop()
+        if top_stack.empty():
+            self.group_stacks.pop()
         return val
