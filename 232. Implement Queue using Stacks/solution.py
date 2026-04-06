@@ -1,24 +1,39 @@
 """1 Task"""
+
+class Node:
+    """class Node"""
+    def __init__(self, data, next=None):
+        self.data = data
+        self.next = None
+
 class Stack:
     """class Stack"""
     def __init__(self):
-        self.data = []
+        self.head = None
 
     def push(self, x: int) -> None:
         """push"""
-        self.data.append(x)
+        new_node = Node(x)
+        new_node.next = self.head
+        self.head = new_node
 
     def pop(self) -> int:
         """pop"""
-        return self.data.pop()
+        if not self.head:
+            return None
+        val = self.head.data
+        self.head = self.head.next
+        return val
 
     def peek(self) -> int:
         """peek"""
-        return self.data[-1]
+        if not self.head:
+            return None
+        return self.head.data
 
     def empty(self) -> bool:
         """is_empty"""
-        if not self.data:
+        if not self.head:
             return True
         return False
 
